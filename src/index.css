@@ -8,7 +8,7 @@
 
 @layer base {
   body {
-    @apply text-base font-normal font-Lato text-dark;
+    @apply bg-white text-base font-normal font-Lato text-dark;
   }
 }
 

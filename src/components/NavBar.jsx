@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 const NavBar = () => {
   return (
     <nav className="fixed inset-x-0 bottom-0 w-full">
-      <div className="container pb-4">
-        <ul className="flex items-center justify-between w-full h-16 bg-dark text-white rounded-full">
+      <div className="relative container pb-4">
+        <ul className="flex items-center justify-between relative z-10 w-full h-16 bg-dark text-white rounded-full">
           {/* Home */}
           <li className="w-1/3 h-full">
             <NavLink
@@ -95,6 +95,7 @@ const NavBar = () => {
             </NavLink>
           </li>
         </ul>
+        <div className="absolute inset-x-0 bottom-0 bg-white w-full h-12" />
       </div>
     </nav>
   );

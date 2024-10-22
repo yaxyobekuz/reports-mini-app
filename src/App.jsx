@@ -17,7 +17,7 @@ import Home from "./pages/Home";
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
+      <Route path="/:p?" element={<MainLayout />}>
         <Route index element={<Home />} />
       </Route>
     )
