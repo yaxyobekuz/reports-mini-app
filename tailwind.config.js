@@ -4,7 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "black",
+        primary: "#27D1A8",
+        secondary: "#F9F9F9",
+        dark: "#333333",
+      },
+
+      fontFamily: {
+        Lato: ["Lato", "sans-serif"],
       },
     },
 
