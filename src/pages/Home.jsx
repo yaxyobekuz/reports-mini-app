@@ -33,6 +33,9 @@ const Home = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const apiUrl = `${apiBaseUrl}?start=${new Date("01-01-1900")}&end=${today}`;
 
+  console.log(apiUrl);
+  
+
   // Fetch data from API
   useEffect(() => {
     setLoader(true);
