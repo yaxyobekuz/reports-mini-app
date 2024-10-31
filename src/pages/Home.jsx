@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-// Axios
-import axios from "axios";
-
-// Utils
-import { filterByDate } from "../utils";
+import { useSelector } from "react-redux";
 
 // Data
 import reportTypes from "../data/reportTypes";
 
+// Utils
+import { filterByDate, reloadPage } from "../utils";
+
 import Icon from "../components/Icon";
-import ReportsChart from "../components/ReportsChart";
+import CustomPieChart from "../components/CustomPieChart";
 
 // Images
 import moneyIcon from "../assets/images/icons/money.svg";
@@ -29,28 +28,14 @@ const Home = () => {
   oneMonthAgo.setMonth(today.getMonth() - 1);
 
   // States
-  const [data, setData] = useState([]);
+  const incomeTxt = "income";
+  const expenseTxt = "expense";
   const [total, setTotal] = useState(0);
-  const [error, setError] = useState(false);
-  const [loader, setLoader] = useState(false);
-  const [chartData, setChartData] = useState([]);
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const [reportType, setReportType] = useState("month");
-  const apiUrl = `${apiBaseUrl}?start=${new Date("01-01-1900")}&end=${today}`;
-
-  // Fetch data from API
-  const fetchData = () => {
-    setError(false);
-    setLoader(true);
-
-    axios
-      .get(apiUrl)
-      .then((res) => setData(res.data))
-      .catch(() => setError(true))
-      .finally(() => setLoader(false));
-  };
-
-  useEffect(() => fetchData(), []);
+  const [mainChartData, setMainChartData] = useState([]);
+  const [incomeChartData, setIncomeChartData] = useState([]);
+  const [expenseChartData, setExpenseChartData] = useState([]);
+  const { data, loader, error } = useSelector((state) => state.data);
 
   // Calculate reports
   useEffect(() => {
@@ -73,16 +58,12 @@ const Home = () => {
         const value = item[3];
         const type = item[1]?.toString()?.toLowerCase();
 
-        if (type === "income") {
-          income += value;
-        } else {
-          expense += value;
-        }
+        type === incomeTxt ? (income += value) : (expense += value);
       });
 
       setTotal(income - expense);
 
-      setChartData([
+      setMainChartData([
         {
           id: "Kirim",
           label: "Kirim",
@@ -94,6 +75,38 @@ const Home = () => {
           value: expense,
         },
       ]);
+
+      const processData = (type) => {
+        const itemsMap = {};
+        const result = { total: 0, items: [] };
+        const filteredData = allData.filter(
+          (item) => item[1]?.toString()?.toLowerCase() === type
+        );
+
+        filteredData.forEach((item) => {
+          const name = item[2];
+          const value = item[3];
+
+          result.total += value;
+
+          if (itemsMap[name]) {
+            itemsMap[name].value += value;
+          } else {
+            itemsMap[name] = { id: name, label: name, value };
+          }
+        });
+
+        // Object to array
+        result.items = Object.values(itemsMap);
+        return result;
+      };
+
+      // Update income & expense chart data
+      const incomeData = processData(incomeTxt);
+      const expenseData = processData(expenseTxt);
+
+      setIncomeChartData(incomeData);
+      setExpenseChartData(expenseData);
     }
   }, [data, reportType]);
 
@@ -143,29 +156,49 @@ const Home = () => {
             <h2 className="text-lg font-bold">Ma'lumotlarni yuklab bo'lmadi</h2>
 
             {/* Reload btn */}
-            <button onClick={fetchData} disabled={loader}>
+            <button onClick={reloadPage} disabled={loader}>
               <Icon src={reloadIcon} size={32} className="size-11" />
             </button>
           </div>
         ) : (
-          <div className="space-y-5 pb-24">
-            {/* Chart */}
-            <ReportsChart data={chartData} className="mt-8" />
+          <div className="space-y-12 pb-32">
+            <div className="space-y-5">
+              {/* Main Reports Pie Chart */}
+              <CustomPieChart data={mainChartData} className="mt-8" />
 
-            {/* Total */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3.5">
-                <Icon src={moneyIcon} className="size-8" />
-                <b className="font-bold text-dark text-lg">
-                  Jami {total >= 0 ? "foyda" : "zarar"}
-                </b>
+              {/* Total */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                  <Icon src={moneyIcon} className="size-8" />
+                  <b className="font-bold text-dark text-lg">
+                    Jami {total >= 0 ? "foyda" : "zarar"}
+                  </b>
+                </div>
+
+                <span className="font-bold">
+                  {total?.toLocaleString()}
+                  <span> so'm</span>
+                </span>
               </div>
-
-              <span className="font-bold">
-                {total?.toLocaleString()}
-                <span> so'm</span>
-              </span>
             </div>
+
+            {/* Income */}
+            <section className="space-y-5">
+              {/* Section title */}
+              <h2 className="text-2xl font-bold">Kirim</h2>
+
+              {/* Section content */}
+              <CustomPieChart data={incomeChartData.items || []} />
+            </section>
+
+            {/* Expense */}
+            <section className="space-y-5">
+              {/* Section title */}
+              <h2 className="text-2xl font-bold">Chiqim</h2>
+
+              {/* Section content */}
+              <CustomPieChart data={expenseChartData.items || []} />
+            </section>
           </div>
         )}
       </main>

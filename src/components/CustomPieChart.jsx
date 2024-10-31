@@ -10,7 +10,7 @@ import chartColors from "../data/chartColors";
 const CustomLegend = ({ data, colors }) => {
   return (
     <div className="flex flex-col gap-3.5">
-      {data.map((item, index) => (
+      {data?.map((item, index) => (
         <div key={item.id} className="flex items-center gap-3.5">
           <div className="flex items-center gap-3.5">
             {/* Legend color box */}
@@ -36,7 +36,7 @@ const CustomLegend = ({ data, colors }) => {
   );
 };
 
-const ReportsChart = ({ data, className = "" }) => {
+const CustomPieChart = ({ data, className = "" }) => {
   // Use the same color scheme as the chart for legends
   const colors = useMemo(() => chartColors, []);
 
@@ -63,4 +63,4 @@ const ReportsChart = ({ data, className = "" }) => {
   );
 };
 
-export default ReportsChart;
+export default CustomPieChart;
