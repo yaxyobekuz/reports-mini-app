@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Axios
-import axios, { all } from "axios";
+import axios from "axios";
 
 // Utils
 import { filterByDate } from "../utils";
@@ -11,7 +11,7 @@ import { filterByDate } from "../utils";
 import reportTypes from "../data/reportTypes";
 
 import Icon from "../components/Icon";
-import PieChart from "../components/PieChart";
+import ReportsChart from "../components/ReportsChart";
 
 // Images
 import moneyIcon from "../assets/images/icons/money.svg";
@@ -150,7 +150,7 @@ const Home = () => {
         ) : (
           <div className="space-y-5 pb-24">
             {/* Chart */}
-            <PieChart data={chartData} className="mt-8" />
+            <ReportsChart data={chartData} className="mt-8" />
 
             {/* Total */}
             <div className="flex items-center justify-between">

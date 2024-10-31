@@ -36,7 +36,7 @@ const CustomLegend = ({ data, colors }) => {
   );
 };
 
-const PieChart = ({ data, className = "" }) => {
+const ReportsChart = ({ data, className = "" }) => {
   // Use the same color scheme as the chart for legends
   const colors = useMemo(() => chartColors, []);
 
@@ -63,4 +63,4 @@ const PieChart = ({ data, className = "" }) => {
   );
 };
 
-export default PieChart;
+export default ReportsChart;
