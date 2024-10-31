@@ -8,3 +8,5 @@ export const filterByDate = (data, startDate, endDate) => {
     return date >= start && date <= end;
   });
 };
+
+export const reloadPage = () => window.location.reload();
