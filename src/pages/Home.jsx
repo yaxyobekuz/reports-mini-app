@@ -27,6 +27,13 @@ const Home = () => {
   const oneMonthAgo = new Date(today);
   oneMonthAgo.setMonth(today.getMonth() - 1);
 
+  // for test
+  useEffect(() => {
+    console.log("Today: ", today);
+    console.log("Week: ", oneWeekAgo);
+    console.log("Month: ", oneMonthAgo);
+  }, []);
+
   // States
   const incomeTxt = "income";
   const expenseTxt = "expense";
@@ -111,9 +118,9 @@ const Home = () => {
   }, [data, reportType]);
 
   return (
-    <div className="container pt-5">
+    <div className="pt-5">
       {/* Header */}
-      <header className="flex items-center justify-between bg-white">
+      <header className="flex items-center justify-between container bg-white">
         <h1 className="text-2xl font-bold">
           {reportTypes.find((type) => type.value === reportType).label}
           <span> hisobot</span>
@@ -129,7 +136,7 @@ const Home = () => {
       </header>
 
       {/* Filter buttons */}
-      <div className="sticky -top-1 inset-x-0 z-10 bg-white pt-5">
+      <div className="sticky -top-1 inset-x-0 z-10 container bg-white pt-5">
         <div className="flex items-center h-12 bg-dark rounded-xl gap-1 p-1 xs:gap-1.5 xs:p-1.5 xs:h-14">
           {reportTypes.map((type, index) => (
             <button
@@ -146,7 +153,7 @@ const Home = () => {
       </div>
 
       {/* Body */}
-      <main>
+      <main className="overflow-x-hidden container">
         {loader ? (
           <div className="flex items-center justify-center h-[calc(100vh-216px)] xs:h-[calc(100vh-224px)]">
             <div className="animate-spin size-8 border-2 border-primary border-y-white rounded-full"></div>

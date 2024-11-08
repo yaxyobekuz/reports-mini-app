@@ -41,7 +41,7 @@ const CustomPieChart = ({ data, className = "" }) => {
   const colors = useMemo(() => chartColors, []);
 
   return (
-    <div className={`w-full h-auto overflow-x-hidden space-y-5 ${className}`}>
+    <div className={`w-full h-auto space-y-5 ${className}`}>
       <div className="w-full h-96">
         <ResponsivePie
           data={data}
