@@ -7,19 +7,46 @@
 /* --- Base --- */
 
 @layer base {
+  * {
+    @apply select-none;
+  }
+
+  html::-webkit-scrollbar {
+    @apply hidden;
+  }
+
   body {
-    @apply bg-white text-base font-normal font-Lato text-dark;
+    @apply bg-[#f5f5f5] text-base font-normal font-Lato text-dark;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply block w-full h-11 px-3.5 bg-white rounded-lg focus:outline-secondary disabled:opacity-50;
+  }
+
+  textarea {
+    @apply py-2.5 min-h-40 max-h-96;
   }
 }
 
 /* --- Components --- */
 
-.navlink .navlink-color {
-  @apply text-white;
+.navlinks a.active {
+  @apply text-secondary;
 }
 
-.navlink.active .navlink-color {
-  @apply text-primary;
+.navlinks a.active img {
+  animation: animate-rotate 500ms ease-in-out;
+}
+
+@keyframes animate-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* --- Utilities --- */
