@@ -20,10 +20,10 @@ export const formatDate = (input) => {
   return `${day}-${month}-${year}`;
 };
 
-export const formatData = (data) => {
-  if (!data || data?.length === 0) return {};
-
+export const formatData = (data, data2) => {
   let total = 0;
+  let total2 = 0;
+  let data2Map = {};
   let totalData = [];
   let totalIncome = 0;
   let totalExpense = 0;
@@ -65,6 +65,23 @@ export const formatData = (data) => {
     }
   });
 
+  // Update data2Map
+  data2.forEach((item) => {
+    const [date, type, category, amount] = item;
+
+    total2 += amount;
+
+    if (data2Map[category]) {
+      data2Map[category].value += amount;
+    } else {
+      data2Map[category] = {
+        id: category,
+        value: amount,
+        label: category,
+      };
+    }
+  });
+
   // Update total & Total data
   total = totalIncome - totalExpense;
   totalData = [
@@ -74,7 +91,9 @@ export const formatData = (data) => {
 
   return {
     total,
+    total2,
     data: totalData,
+    data2: Object.values(data2Map),
     income: { total: totalIncome, data: Object.values(incomeDataMap) },
     expense: { total: totalExpense, data: Object.values(expenseDataMap) },
   };
