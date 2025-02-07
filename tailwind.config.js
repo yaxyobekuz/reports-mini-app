@@ -15,7 +15,7 @@ export default {
     },
 
     screens: {
-      xs: "400px",
+      xs: "415px",
     },
   },
   plugins: [],
