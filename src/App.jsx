@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 // Router
 import {
   Route,
@@ -16,7 +18,10 @@ import useTelegram from "./hooks/useTelegram";
 import MainLayout from "./layouts/MainLayout";
 
 const App = () => {
-  const { id } = useTelegram()?.user || {};
+  const { user, tg } = useTelegram() || {};
+  useEffect(() => tg.setHeaderColor("#f5f5f5"), []);
+  useEffect(() => tg.setBottomBarColor("#f5f5f5"), []);
+  if (!user?.id) return "Siz uchun kirish taqiqlandi!";
 
   const router = createBrowserRouter(
     createRoutesFromElements(

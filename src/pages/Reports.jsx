@@ -7,6 +7,7 @@ import api from "../api";
 import axios from "axios";
 
 // Data
+import secretKey from "../data/secretKey";
 import reportTypes from "../data/reportTypes";
 
 // Hooks
@@ -33,14 +34,15 @@ import reloadIcon from "../assets/images/icons/reload.svg";
 
 const Reports = () => {
   const dispatch = useDispatch();
-  const { user, tg } = useTelegram();
-  useEffect(() => tg.setHeaderColor("#f5f5f5"), []);
-  const secretKey = import.meta.env.VITE_SECRET_KEY;
-  const [reportType, setReportType] = useState("month");
-  const { data, loader, error } = useSelector((state) => state.data);
+  const { user } = useTelegram();
+  const autoDownloadType = localStorage.getItem("autoDownloadType");
+  const { data, data2, loader, error } = useSelector((state) => state.data);
+  const [reportType, setReportType] = useState(autoDownloadType || "month");
   const [reports, setReports] = useState({
     data: [],
     total: 0,
+    data2: [],
+    total2: 0,
     income: { total: 0, data: [] },
     expense: { total: 0, data: [] },
   });
@@ -50,7 +52,7 @@ const Reports = () => {
     dispatch(updateLoader(true));
 
     const apiUrl = `${api}?userId=${encryptId(
-      user?.id || 298444246,
+      user?.id || 1234,
       secretKey
     )}&time=${reportType}`;
 
@@ -58,8 +60,10 @@ const Reports = () => {
       .get(apiUrl)
       .then(({ data: res }) => {
         if (res?.success) {
-          setReports(formatData(res.data));
-          dispatch(updateData({ type: reportType, data: res.data }));
+          setReports(formatData(res.data, res.data2));
+          dispatch(
+            updateData({ type: reportType, data: res.data, data2: res.data2 })
+          );
         } else {
           dispatch(updateError(true));
           alert(res?.message || "Xatolik!");
@@ -71,16 +75,14 @@ const Reports = () => {
 
   useEffect(() => {
     if (data[reportType]) {
-      dispatch(updateError(false));
-      dispatch(updateLoader(false));
-      setReports(formatData(data[reportType]));
+      setReports(formatData(data[reportType], data2[reportType]));
     } else fetchData();
   }, [reportType]);
 
   return (
     <div className="pb-10">
       {/* Top */}
-      <div className="sticky top-0 inset-x-0 z-10 bg-gradient-to-b from-[#f5f5f5] to-white border-b">
+      <div className="sticky top-0 inset-x-0 z-20 bg-gradient-to-b from-[#f5f5f5] to-white border-b">
         <div className="container py-3.5">
           <div className="flex items-center h-10 gap-1.5">
             {reportTypes.map(({ value, label, disabled }, index) => (
@@ -162,6 +164,28 @@ const Reports = () => {
 
               {/* Section content */}
               <CustomPieChart data={reports?.expense?.data || []} />
+            </section>
+
+            {/* Stable Income */}
+            <section className="space-y-5">
+              {/* Section title */}
+              <h2 className="text-2xl font-bold">To'liq daromad</h2>
+
+              {/* Section content */}
+              <CustomPieChart data={reports?.data2 || []} />
+
+              {/* Total */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                  <Icon src={moneyIcon} className="size-8" />
+                  <b className="font-bold text-dark text-lg">Jami foyda</b>
+                </div>
+
+                <span className="font-bold">
+                  {reports?.total2?.toLocaleString() || 0}
+                  <span> so'm</span>
+                </span>
+              </div>
             </section>
           </div>
         )}

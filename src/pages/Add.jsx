@@ -10,6 +10,9 @@ import axios from "axios";
 // Components
 import Icon from "../components/Icon";
 
+// Data
+import secretKey from "../data/secretKey";
+
 // Hooks
 import useTelegram from "../hooks/useTelegram";
 
@@ -23,7 +26,6 @@ const Add = () => {
   const { user, tg } = useTelegram();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => tg.setHeaderColor("#f5f5f5"), []);
-  const secretKey = import.meta.env.VITE_SECRET_KEY;
   const { first_name: firstName, photo_url: avatar, username } = user || {};
 
   // Submit form
@@ -38,6 +40,7 @@ const Add = () => {
     const type = getInputValue("#type");
     const amount = getInputValue("#amount");
     const category = getInputValue("#category");
+    const checkbox = getInputValue("#checkbox");
     const description = getInputValue("#description");
 
     const apiUrl = `${api}?userId=${encryptId(
@@ -46,12 +49,12 @@ const Add = () => {
     )}&method=post&data=${encodeURIComponent(
       JSON.stringify([
         formatDate(today),
-        type,
-        category,
-        amount,
-        description || "-",
+        type || "Chiqim",
+        category || "Mavjud emas",
+        amount || 0,
+        description || "—",
       ])
-    )}`;
+    )}&stableIncome=${checkbox === "on"}`;
 
     axios
       .post(apiUrl)
@@ -66,7 +69,7 @@ const Add = () => {
   };
 
   return (
-    <div className="pb-20">
+    <div className="pb-10">
       {/* Top */}
       <div className="sticky top-0 inset-x-0 z-10 bg-gradient-to-b from-[#f5f5f5] to-white border-b">
         <div className="container py-3.5">
@@ -110,7 +113,7 @@ const Add = () => {
       </div>
 
       {/* Main */}
-      <main className="container py-5">
+      <main className="container pt-5">
         <form onSubmit={handleAddReport} className="space-y-5">
           {/* Date */}
           <div className="space-y-2.5">
@@ -177,18 +180,26 @@ const Add = () => {
             />
           </div>
 
-          {/* Submit button */}
-          <div className="fixed inset-x-0 bottom-16 container bg-[#f5f5f5] pb-5 !mt-0">
-            <button
-              disabled={isLoading}
-              className={`${
-                isLoading ? "animate-pulse" : ""
-              } w-full h-12 bg-secondary text-white rounded-lg`}
-            >
-              Qo'shish
-              {isLoading && "..."}
-            </button>
+          <div className="flex items-center gap-3">
+            <input
+              id="checkbox"
+              type="checkbox"
+              name="checkbox"
+              className="size-5"
+            />
+            <label htmlFor="checkbox">To'liq daromad sifatida belgilash</label>
           </div>
+
+          {/* Submit button */}
+          <button
+            disabled={isLoading}
+            className={`${
+              isLoading ? "animate-pulse" : ""
+            } w-full h-12 bg-secondary text-white rounded-lg`}
+          >
+            Qo'shish
+            {isLoading && "..."}
+          </button>
         </form>
       </main>
     </div>
