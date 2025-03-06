@@ -31,6 +31,7 @@ const Add = () => {
   // Submit form
   const handleAddReport = (e) => {
     e.preventDefault();
+
     if (isLoading) return;
     setIsLoading(true);
 
@@ -40,11 +41,11 @@ const Add = () => {
     const type = getInputValue("#type");
     const amount = getInputValue("#amount");
     const category = getInputValue("#category");
-    const checkbox = getInputValue("#checkbox");
     const description = getInputValue("#description");
+    const checkbox = e.target.querySelector("#checkbox").checked;
 
     const apiUrl = `${api}?userId=${encryptId(
-      user?.id || 1234,
+      user?.id || 298444246,
       secretKey
     )}&method=post&data=${encodeURIComponent(
       JSON.stringify([
@@ -54,7 +55,7 @@ const Add = () => {
         amount || 0,
         description || "—",
       ])
-    )}&stableIncome=${checkbox === "on"}`;
+    )}&stableIncome=${checkbox}`;
 
     axios
       .post(apiUrl)
